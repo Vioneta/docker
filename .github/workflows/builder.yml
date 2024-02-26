@@ -24,11 +24,11 @@ jobs:
 
       - name: Get information
         id: info
-        uses: home-assistant/actions/helpers/info@master
+        uses: Vioneta/actions/helpers/info@master
 
       - name: Get version
         id: version
-        uses: home-assistant/actions/helpers/version@master
+        uses: Vioneta/actions/helpers/version@master
         with:
           type: ${{ env.BUILD_TYPE }}
 
@@ -59,16 +59,16 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Build wheels cp312
-        uses: home-assistant/wheels@2024.01.0
-        if: github.event_name == 'release' || steps.requirements.outputs.changed == 'true'
-        with:
-          tag: musllinux_1_2
-          abi: cp312
-          arch: ${{ matrix.arch }}
-          wheels-key: ${{ secrets.WHEELS_KEY }}
-          apk: "mariadb-dev;postgresql-dev;libffi-dev"
-          requirements: "requirements.txt"
+      # - name: Build wheels cp312
+      #   uses: home-assistant/wheels@2024.01.0
+      #   if: github.event_name == 'release' || steps.requirements.outputs.changed == 'true'
+      #   with:
+      #     tag: musllinux_1_2
+      #     abi: cp312
+      #     arch: ${{ matrix.arch }}
+      #     wheels-key: ${{ secrets.WHEELS_KEY }}
+      #     apk: "mariadb-dev;postgresql-dev;libffi-dev"
+      #     requirements: "requirements.txt"
 
       - name: Login to GitHub Container Registry
         if: github.event_name == 'release'
@@ -89,5 +89,4 @@ jobs:
             $BUILD_ARGS \
             --${{ matrix.arch }} \
             --target /data \
-            --cosign \
             --generic ${{ needs.init.outputs.version }}
